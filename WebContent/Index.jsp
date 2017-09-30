@@ -5,6 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script src="https://unpkg.com/angular@1.6.6/angular.min.js"></script>
 <title>Insert title here</title>
 </head>
 <body>
@@ -20,6 +21,47 @@
 <div>
 	Java version is <%= System.getProperty("java.version") %>
 </div>
+
+<my-app></my-app>
+
+
+<script type="text/javascript">
+	var appName = "helloWorldApp";
+	var app = angular.module(appName,[]);
+	
+	// general service
+	var generalServiceName = "$general";
+	app.service(generalServiceName, ["$http",function($http){
+		var vm = this;
+		vm.apiRoot = "API";
+		
+		vm.getHello = function(){
+			return $http.get(vm.apiRoot, {cache:false})
+				.then(function(response){
+					return response.data;
+				});
+		};
+	}]);
+	
+	var myAppComponent = "myApp";
+	app.component(myAppComponent, {
+		controller: [generalServiceName, function($general){
+			var vm = this;
+			vm.$onInit = function(){
+				$general.getHello().then(function(message){
+					vm.result = message;
+				});
+			};
+		}],
+		controllerAs: 'vm',
+		template: "<div>{{vm.result}}</div>"
+	});
+	
+	// bootstrap
+	angular.element(document).ready(function() {
+	    angular.bootstrap(document, [appName]);
+	});
+</script>
 
 </body>
 </html>
