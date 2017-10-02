@@ -33,12 +33,12 @@
 	var generalServiceName = "$general";
 	app.service(generalServiceName, ["$http",function($http){
 		var vm = this;
-		vm.apiRoot = "API";
+		vm.apiRoot = "api/general/";
 		
 		vm.getHello = function(){
-			return $http.get(vm.apiRoot, {cache:false})
+			return $http.get(vm.apiRoot + "hello", {cache:false})
 				.then(function(response){
-					return response.data;
+					return response.data.Val; // look at RestString (Find better way some day)
 				});
 		};
 	}]);
